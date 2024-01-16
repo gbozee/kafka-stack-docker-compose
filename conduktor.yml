@@ -16,7 +16,7 @@ services:
   conduktor-platform:
     image: conduktor/conduktor-platform:latest
     ports:
-      - "8080:8080"
+      - "8099:8080"
     volumes:
       - conduktor_data:/var/conduktor
     environment:
@@ -31,6 +31,17 @@ services:
       CDK_CLUSTERS_0_SCHEMAREGISTRY_URL: "http://kafka-schema-registry:8081"
       CDK_CLUSTERS_0_KAFKACONNECTS_0_URL: "http://kafka-connect:8083"
       CDK_CLUSTERS_0_KAFKACONNECTS_0_NAME: "full stack kafka connect"
+      CDK_MONITORING_CORTEX-URL: "http://conduktor-monitoring:9009"
+      CDK_MONITORING_ALERT-MANAGER-URL: "http://conduktor-monitoring:9010"
+      CDK_MONITORING_CALLBACK-URL: "http://conduktor-platform:9090"
+      CDK_MONITORING_NOTIFICATIONS-CALLBACK-URL: "http://conduktor-platform:8080" # to change
+
+  conduktor-monitoring:
+    hostname: conduktor-monitoring
+    container_name: conduktor-monitoring
+    image: conduktor/conduktor-platform-cortex:1.18.1
+    environment:
+      CDK_CONSOLE-URL: "http://conduktor-platform:8080"
 
 volumes:
   pg_data: {}
